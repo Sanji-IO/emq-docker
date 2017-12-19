@@ -33,15 +33,19 @@ if [[ -z "$EMQ_HOST" ]]; then
     export EMQ_HOST="$LOCAL_IP"
 fi
 
+if [[ -z "$EMQ_WAIT_TIME" ]]; then
+    export EMQ_WAIT_TIME=5
+fi
+
 if [[ -z "$EMQ_NODE__NAME" ]]; then
     export EMQ_NODE__NAME="$EMQ_NAME@$EMQ_HOST"
 fi
 
 # Set hosts to prevent cluster mode failed
 
-if [[ ! -z "$LOCAL_IP" && ! -z "$EMQ_HOST" ]]; then
-    echo "$LOCAL_IP        $EMQ_HOST" >> /etc/hosts
-fi
+# if [[ ! -z "$LOCAL_IP" && ! -z "$EMQ_HOST" ]]; then
+#     echo "$LOCAL_IP        $EMQ_HOST" >> /etc/hosts
+# fi
 
 # unset EMQ_NAME
 # unset EMQ_HOST
@@ -137,7 +141,7 @@ do
     sleep 1
     echo "['$(date -u +"%Y-%m-%dT%H:%M:%SZ")']:waiting emqttd"
     WAIT_TIME=$((WAIT_TIME+1))
-    if [[ $WAIT_TIME -gt 5 ]]; then
+    if [[ $WAIT_TIME -gt $EMQ_WAIT_TIME ]]; then
         echo "['$(date -u +"%Y-%m-%dT%H:%M:%SZ")']:timeout error"
         exit 1
     fi
